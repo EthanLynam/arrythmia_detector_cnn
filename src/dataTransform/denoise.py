@@ -8,7 +8,7 @@ def denoise_signal(ECG_data):
     coefficients = wavedec(ECG_data, 'bior4.4', level=10)  # decompose signal into wavelt coefficients
 
     low_cutoff = 1
-    high_cutoff = 7
+    high_cutoff = 9
 
     # zero out coeffocoents from 0 to low cutoff 
     for num in range(0, low_cutoff):
