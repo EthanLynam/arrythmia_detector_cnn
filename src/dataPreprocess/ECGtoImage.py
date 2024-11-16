@@ -17,6 +17,23 @@ records = [f.split('.')[0] for f in os.listdir(record_db) if f.endswith('.dat')]
 sampling_rate = 360
 detectors = Detectors(sampling_rate)
 
+# prev_annotation = annotation.symbol[closest_annotation_idx - 1] if closest_annotation_idx > 0 else None
+#
+#        next_annotation = annotation.symbol[closest_annotation_idx + 1] if closest_annotation_idx < closest_annotation_idx+1 else None
+#
+#         # Detect if the two previous annotations are 'n' and 'n' (nn interval)
+#        if prev_annotation == '~':
+#            skip_noisy_period = True
+#        elif next_annotation == '~':  # If 'cc' is encountered, stop skipping
+#            prev_annotation, next_annotation = None
+#            skip_noisy_period = False
+#        
+#        # If we are in the 'nn' period, skip this R-peak and move to the next one
+#        if skip_noisy_period:
+#            print(f'    Patient {patient_num}: image of heartbeat {idx} skipped as data is too noisy.')
+#            continue
+
+
 # Loop through each patient_nums record. Each record has a set of 3 files:
 # 001.dat, 001.hea, 001.atr, which are contained inside the locally stored MIT-BIH-DB
 for patient_num in records:
@@ -24,10 +41,14 @@ for patient_num in records:
 
     record_data = wfdb.rdsamp(f'../../MIT-BIH-DB/{patient_num}')
     annotation = wfdb.rdann(f'../../MIT-BIH-DB/{patient_num}', 'atr')
-    
-    # Get the ECG values from the file and choose the ecg_data to process 
+
     ecg_data = record_data[0].transpose()
-    ecg_data = ecg_data[0]  # This will be MLII for all records but 102, 104, 114 which will be V5
+
+    # Get the ECG values from the file and choose the ecg_data to process 
+    if patient_num == 114:
+        ecg_data = ecg_data[1]  # MLII is contained in the second lead for record 114
+    else:
+        ecg_data = ecg_data[0]  # This will be MLII for all records but 102, 104 which will be V5, as patients are on a pacemaker
 
     # Denoise the data
     ecg_data = denoise_signal(ecg_data)
@@ -42,7 +63,43 @@ for patient_num in records:
     pre_R_window = 100  # Number of samples before the R-peak
     post_R_window = 100  # Number of samples after the R-peak
 
+    skip_noisy_period = False
+    noisy_periods = []  # List to store noisy periods
+
+   # Loop through all annotations and identify the noisy periods based on subtypes
+    for i, annotation_sample in enumerate(annotation.sample):
+        annotation_symbol = annotation.symbol[i]
+        subtyp = annotation.subtype[i]
+        
+        # Check for noisy periods based on subtype
+        if (annotation_symbol == '~') and (subtyp in [1, 2, 3]):  # Start of noisy period
+            if not skip_noisy_period:  # Only mark the start of the noisy period if we aren't already in one
+                skip_noisy_period = True
+                start_sample = annotation_sample
+                print(f"    Patient {patient_num}: Noisy period starts at sample {annotation_sample}.")
+        elif (annotation_symbol == '~') and (subtyp == 0):  # Clean period (end of noisy period)
+            if skip_noisy_period:  # Only mark the end of the noisy period if we are currently in one
+                skip_noisy_period = False
+                noisy_periods.append((start_sample, annotation_sample))
+                print(f"    Patient {patient_num}: Noisy period ends at sample {annotation_sample}.")
+        elif (annotation_symbol == '~') and (subtyp == -1):
+            continue
+
     for idx, rpeak_idx in enumerate(rpeaks_indices['rpeaks']):
+
+        # Check if the current R-peak is within a noisy period
+        in_noisy_period = False
+        for start_sample, end_sample in noisy_periods:
+            if start_sample <= rpeak_idx <= end_sample:
+                in_noisy_period = True
+                break
+
+        # If we're in a noisy period, skip the heartbeat
+        if in_noisy_period:
+            print(f'    Patient {patient_num}: image of heartbeat {idx} skipped as data is too noisy.')
+            continue
+
+
         # Find the annotation closest to the R-peak
         closest_annotation_idx = numpy.argmin(numpy.abs(annotation.sample - rpeak_idx))
         closest_annotation = annotation.symbol[closest_annotation_idx]
@@ -84,3 +141,5 @@ for patient_num in records:
 
         # Close the plot to free up resources
         plt.close(fig)
+
+        # progrsm to make new beats.
