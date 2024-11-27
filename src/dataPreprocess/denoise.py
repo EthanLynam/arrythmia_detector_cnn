@@ -12,9 +12,7 @@ import numpy
 
 
 def denoise_signal(ecg_data):
-    """
-    see top comment
-    """
+    """denoises the given signal"""
 
     # decompose signal into wavelt coefficients
     coefficients = pywt.wavedec(ecg_data, 'db5', level=10)

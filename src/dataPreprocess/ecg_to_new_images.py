@@ -62,7 +62,7 @@ for patient_num in records:
             axo.set_title(f'Original {closest_annotation}')
             axo.set_xlim(0, len(beat))
             axo.axis('off')
-            figO.savefig(f'../../created-images/Edited/{idx}_{patient_num}.png', bbox_inches='tight', pad_inches=0)
+            figO.savefig(f'../../created-images/Edited/{patient_num}_{idx}.png', bbox_inches='tight', pad_inches=0)
             plt.close(figO)
         
         # Beat stretch
@@ -90,7 +90,7 @@ for patient_num in records:
         beat_stretched = beat_stretched[start_idx_edit:end_idx_edit]
 
         # polynomial coefficients for a quadratic polynomial
-        a, b, c = 0.9, 1.1, 0 
+        a, b, c = 0.1, 0.8, 0
 
         # normalized range over the stretched beat
         x_stretched_poly = numpy.linspace(0, 1, len(beat))
@@ -107,7 +107,7 @@ for patient_num in records:
             ax.set_title(f'Augmented {closest_annotation}')
             ax.set_xlim(0, len(beat))
             ax.axis('off')
-            fig.savefig(f'../../created-images/Edited/{idx}_{patient_num}_new.png', bbox_inches='tight', pad_inches=0)
+            fig.savefig(f'../../created-images/Edited/{patient_num}_{idx}_new.png', bbox_inches='tight', pad_inches=0)
             print(f'    Patient {patient_num}: original and augmented images of heartbeat {idx} created around index {rpeak_idx}.')
             plt.close(fig)
 
@@ -117,12 +117,12 @@ for patient_num in records:
             ax_aug.set_title(f'Polynomial {closest_annotation}')
             ax_aug.set_xlim(0, len(beat))
             ax_aug.axis('off')
-            fig_aug.savefig(f'../../created-images/Edited/{idx}_{patient_num}_poly_new.png', bbox_inches='tight', pad_inches=0)
+            fig_aug.savefig(f'../../created-images/Edited/{patient_num}_{idx}_poly_new.png', bbox_inches='tight', pad_inches=0)
             print(f'    Patient {patient_num}: polynomial augmented image of heartbeat {idx} created around index {rpeak_idx}.')
             plt.close(fig_aug)
 
 
-# change image size to 256 x 256? 
+# 
 # get onto bryan about how his code sction is meant to work.
 # tell bryan how the image size does not correlate to the ECG data. e.g. right now 256 data points are still being shown in a 128 x 128 image.
 # potentially leave out patient 108s data

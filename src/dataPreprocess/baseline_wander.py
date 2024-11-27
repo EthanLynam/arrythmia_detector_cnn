@@ -9,9 +9,8 @@ up with no loss of data shape.
 from scipy.signal import butter, filtfilt
 
 def remove_baseline_wander(ecg_data):
-    """
-    see top comment.
-    """
+    """removes baseline wander from given signal"""
+
     samp_frequency = 360
 
     normal_cutoff = 0.5 / (0.5 * samp_frequency)

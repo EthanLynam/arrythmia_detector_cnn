@@ -16,6 +16,7 @@ from biosppy.signals import ecg
 
 from denoise import denoise_signal
 from baseline_wander import remove_baseline_wander
+from beat_augment import beat_augment
 
 RECORD_DB = "../../MIT-BIH-DB" # RECORD_DB = MIT-BIH database
 PRE_R_WINDOW = 128  # Number of samples before the R-peak
@@ -142,7 +143,8 @@ for patient_num in records:
         )
         print(f' Patient {patient_num}: image of heartbeat {idx} created around index {rpeak_idx}.')
 
+        # creates extra augmented images of any arrythmias
+        beat_augment(beat, closest_annotation, idx, patient_num)
+
         # Close the plot to free up resources
         plt.close(fig)
-
-        # progrsm to make new beats, reprocess 114 for MLII.
