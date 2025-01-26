@@ -1,6 +1,6 @@
-import wfdb 
-import numpy
 import os
+import wfdb
+import numpy
 import matplotlib.pyplot as plt
 from biosppy.signals import ecg
 from ecgdetectors import Detectors
@@ -25,7 +25,7 @@ for patient_num in records:
 
     record_data = wfdb.rdsamp(f'../../MIT-BIH-DB/{patient_num}')
     annotation = wfdb.rdann(f'../../MIT-BIH-DB/{patient_num}', 'atr')
-    
+
     # Get the ECG values from the file and choose the ecg_data to process 
     ecg_data = record_data[0].transpose()
     ecg_data = ecg_data[0]  # This will be MLII for all records but 102, 104, 114 which will be V5
@@ -56,15 +56,15 @@ for patient_num in records:
         beat = ecg_data[start_idx:end_idx]
 
         # Plot and save the original signal
-        if closest_annotation != 'N':
-            figO, axo = plt.subplots(figsize=(1.66, 1.38), dpi=100)
-            axo.plot(beat, color='black')
-            axo.set_title(f'Original {closest_annotation}')
-            axo.set_xlim(0, len(beat))
-            axo.axis('off')
-            figO.savefig(f'../../created-images/Edited/{patient_num}_{idx}.png', bbox_inches='tight', pad_inches=0)
-            plt.close(figO)
-        
+        #if closest_annotation != 'N':
+        #    figO, axo = plt.subplots(figsize=(1.66, 1.38), dpi=100)
+        #    axo.plot(beat, color='black')
+        #    axo.set_title(f'Original {closest_annotation}')
+        #    axo.set_xlim(0, len(beat))
+        #    axo.axis('off')
+        #    figO.savefig(f'../../created-images/Edited/{patient_num}_{idx}.png', bbox_inches='tight', pad_inches=0)
+        #    plt.close(figO)
+
         # Beat stretch
         #x_original = numpy.arange(len(beat)) - 128
         #mag = 1.05
@@ -120,9 +120,3 @@ for patient_num in records:
             fig_aug.savefig(f'../../created-images/Edited/{patient_num}_{idx}_poly_new.png', bbox_inches='tight', pad_inches=0)
             print(f'    Patient {patient_num}: polynomial augmented image of heartbeat {idx} created around index {rpeak_idx}.')
             plt.close(fig_aug)
-
-
-# 
-# get onto bryan about how his code sction is meant to work.
-# tell bryan how the image size does not correlate to the ECG data. e.g. right now 256 data points are still being shown in a 128 x 128 image.
-# potentially leave out patient 108s data
