@@ -105,7 +105,6 @@ def beat_augment(beat_data, beat_label, idx, patient_num):
 
     # Add the normal beat to the list of images to save
     pairs = [
-        (beat_data, "normal"),  # Normal beat
         (new_positive_beat, "Op"), # Op = Original positive polynomial
         (new_negative_beat, "On"), # On = Original negatuve polynomial
         (new_positive_beat_stretched, "Sp"), # Sp = Stretched & positive polynomial
