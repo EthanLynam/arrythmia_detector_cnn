@@ -114,6 +114,13 @@ def beat_augment(beat_data, beat_label, idx, patient_num):
 
     # Save all images
     for data, name in pairs:
+
+        # construct the directory paths
+        directory = f'../../created-images/Edited/{full_name}'
+        
+        # create the directory if it doesnt exist (for future users)
+        os.makedirs(directory, exist_ok=True)
+
         fig, ax = plt.subplots(figsize=(1.66, 1.38), dpi=100)
         ax.plot(data, color='black')
         ax.set_title(full_name)
@@ -121,7 +128,7 @@ def beat_augment(beat_data, beat_label, idx, patient_num):
         ax.axis('off')
 
         fig.savefig(
-            f'../../created-images/Edited/{full_name}/{patient_num}_{idx}_{name}.png',
+            f'{directory}/{patient_num}_{idx}_{name}.png',
             bbox_inches='tight',
             pad_inches=0
             )

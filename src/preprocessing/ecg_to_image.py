@@ -135,9 +135,15 @@ for patient_num in records:
         }
         full_name = annotation_map.get(closest_annotation, 'OTHER')
 
-        # Save the figure
+        # construct the directory path
+        directory = f'../../created-images/{full_name}'
+
+        # create the directory if it doesnt exist for future users
+        os.makedirs(directory, exist_ok=True)
+
+        # Save the figure in the created images folder for viewing
         fig.savefig(
-            f'../../created-images/{full_name}/{patient_num}_{idx}.png',
+            f'{directory}/{patient_num}_{idx}.png',
             bbox_inches='tight',
             pad_inches=0
         )
