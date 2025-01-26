@@ -14,9 +14,9 @@ import numpy
 import matplotlib.pyplot as plt
 from biosppy.signals import ecg
 
-from denoise import denoise_signal
-from baseline_wander import remove_baseline_wander
-from beat_augment import beat_augment
+from preprocessing.utils.denoise import denoise_signal
+from preprocessing.utils.baseline_wander import remove_baseline_wander
+from preprocessing.utils.beat_augment import beat_augment
 
 RECORD_DB = "../../MIT-BIH-DB" # RECORD_DB = MIT-BIH database
 PRE_R_WINDOW = 128  # Number of samples before the R-peak
