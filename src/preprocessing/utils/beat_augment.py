@@ -55,8 +55,9 @@ def beat_augment(beat_data, beat_label, idx, patient_num):
     new_negative_beat_stretched = beat_stretched * poly_negative_stretched
 
 # THIS SECTION LABELS THE AUGMENTED BEATS AND PLACES THEM IN DISTINCTIVE FOLDERS
-# INSIDE OF CREATED_IMAGES -> EDITED. IT IS FOR VIEWING PURPOSES AND TO SEE 
+# INSIDE OF CREATED_IMAGES -> EDITED. IT IS FOR VIEWING PURPOSES AND TO SEE
 # THE DIFFERENCES BETWEEN EACH IMAGE IN COMPARISON TO THE ORIGINAL AND EACH OTHER.
+# WAS USED DURING DEVELOPMENT OF PREPROCESSING AND RETIRED AFTER MOVING TO CNN.
 
 #    # Create directories
 #    direct = f'../../created-images/Edited/Patient_{patient_num}/Beat_{idx}'
