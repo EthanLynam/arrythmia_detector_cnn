@@ -18,7 +18,7 @@ from utils.denoise import denoise_signal
 from utils.baseline_wander import remove_baseline_wander
 from utils.beat_augment import beat_augment
 
-RECORD_DB = "../../MIT-BIH-DB" # RECORD_DB = MIT-BIH database
+RECORD_DB = "../../MIT_BIH_DB" # RECORD_DB = MIT-BIH database
 PRE_R_WINDOW = 128  # Number of samples before the R-peak
 POST_R_WINDOW = 128  # Number of samples after the R-peak
 SAMPLING_RATE = 360 # Sa,pling rate of the data
@@ -27,19 +27,19 @@ SAMPLING_RATE = 360 # Sa,pling rate of the data
 records = [f.split('.')[0] for f in os.listdir(RECORD_DB) if f.endswith('.dat')]
 
 # Loop through each patient_nums record. Each record has a set of 3 files:
-# 001.dat, 001.hea, 001.atr, which are contained inside the locally stored MIT-BIH-DB
+# 001.dat, 001.hea, 001.atr, which are contained inside the locally stored MIT_BIH_DB
 for patient_num in records:
     print(f"Processing record: {patient_num}")
 
-    record_data = wfdb.rdsamp(f'../../MIT-BIH-DB/{patient_num}')
-    annotation = wfdb.rdann(f'../../MIT-BIH-DB/{patient_num}', 'atr')
+    record_data = wfdb.rdsamp(f'../../MIT_BIH_DB/{patient_num}')
+    annotation = wfdb.rdann(f'../../MIT_BIH_DB/{patient_num}', 'atr')
 
     ecg_data = record_data[0].transpose()
 
     # Get the ECG values from the file and choose the ecg_data to process
     # This will be MLII for all records but 102, 104,
     # which will be V5 (these patients are on a pacemaker)
-    if patient_num == 114:
+    if patient_num == 114 or 207:
         ecg_data = ecg_data[1]  # MLII is contained in the second lead for record 114
     else:
         ecg_data = ecg_data[0]
@@ -136,7 +136,7 @@ for patient_num in records:
         full_name = annotation_map.get(closest_annotation, 'OTHER')
 
         # construct the directory path
-        directory = f'../../created-images/{full_name}'
+        directory = f'../../created_images/{full_name}'
 
         # create the directory if it doesnt exist for future users
         os.makedirs(directory, exist_ok=True)

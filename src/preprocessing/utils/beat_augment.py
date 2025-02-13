@@ -81,7 +81,7 @@ def beat_augment(beat_data, beat_label, idx, patient_num):
 #        ax.axis('off')
 #
 #        fig.savefig(
-#            f'../../created-images/Edited/Patient_{patient_num}/Beat_{idx}/{name}.png',
+#            f'../../created-images/EDITED/Patient_{patient_num}/Beat_{idx}/{name}.png',
 #            bbox_inches='tight',
 #            pad_inches=0
 #            )
@@ -89,7 +89,7 @@ def beat_augment(beat_data, beat_label, idx, patient_num):
 #        plt.close(fig)
 
 # THIS SECTION LABELS ALL BEATS BY THEIR TYPES AND PLACES THEM INSIDE GENERIC
-# CLASS FOLDERS (NOR, LBB, RBB ... VFW) INSIDE OF CREATED-IMAGES WITH THE REST.
+# CLASS FOLDERS (NOR, LBB, RBB ... VFW) INSIDE OF CREATED-IMAGES WITH ORIGINALS.
 # IT IS FOR THE CNN TO USE LATER TO DIVIDE THEM INTO TRAINING, VAL, OR TESTING DATA.
 
     annotation_map = {
@@ -116,14 +116,13 @@ def beat_augment(beat_data, beat_label, idx, patient_num):
     for data, name in pairs:
 
         # construct the directory paths
-        directory = f'../../created-images/{full_name}'
+        directory = f'../../created_images/{full_name}'
 
         # create the directory if it doesnt exist (for future users)
         os.makedirs(directory, exist_ok=True)
 
         fig, ax = plt.subplots(figsize=(1.66, 1.38), dpi=100)
         ax.plot(data, color='black')
-        ax.set_title(beat_label)
         ax.set_xlim(0, len(data))
         ax.axis('off')
 
