@@ -2,7 +2,7 @@
 
 import tensorflow as tf
 
-def create_cnn():
+def cnn():
 
     model = tf.keras.Sequential([
 

@@ -29,6 +29,9 @@ records = [f.split('.')[0] for f in os.listdir(RECORD_DB) if f.endswith('.dat')]
 # Loop through each patient_nums record. Each record has a set of 3 files:
 # 001.dat, 001.hea, 001.atr, which are contained inside the locally stored MIT_BIH_DB
 for patient_num in records:
+    if (int(patient_num) < 223):
+        continue
+    
     print(f"Processing record: {patient_num}")
 
     record_data = wfdb.rdsamp(f'../../MIT_BIH_DB/{patient_num}')
@@ -116,9 +119,8 @@ for patient_num in records:
 
         # Create the plot
         # 3.31, 3.04 for 256 x 256 sized image
-        fig, ax = plt.subplots(figsize=(1.66, 1.38), dpi=100)
+        fig, ax = plt.subplots(figsize=(1.66, 1.67), dpi=100)
         ax.plot(beat, color='black')
-        ax.set_title(closest_annotation)
         ax.set_xlim(0, len(beat))
         ax.axis('off')
 
