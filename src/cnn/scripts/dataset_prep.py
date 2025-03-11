@@ -1,8 +1,19 @@
+'''
+Takes the images created by preprocessing and creates links inside a new folder 'data'
+for CNN to use for training, validation and testing. Shuffles order of files
+before creating links to prevent training, val, test from containing mostly images
+from a single patient, and instead takes a balanced mix of patients data.
+It also only takes maximum 3000 images from each of NOR, APC, LBB etc.
+to have a balanced distribution of data, due to NOR unfiltered having 70000
+images vs others with less than 1000.
+'''
+
 import os
 import random
 
-# paths
-SOURCE_DIR = "../../created_images"
+# paths are created relative to location of cnn_notebook.ipynb
+# as dataset_prep is executed there
+SOURCE_DIR = "../preprocessing/data/created_images"
 TEST_DIR = "data/test"
 TRAINING_DIR = "data/training"
 VALIDATION_DIR = "data/validation"
@@ -13,15 +24,9 @@ VAL_RATIO = 0.2
 TEST_RATIO = 0.1
 
 def dataset_prep():
-    '''
-    Takes the images created by preprocessing and creates links inside a new folder 'data'
-    for CNN to use for training, validation and testing. Shuffles order of files
-    before creating links to prevent training, val, test from containing mostly images
-    from a single patient, and instead takes a balanced mix of patients data.
-    It also only takes maximum 3000 images from each of NOR, APC, LBB etc.
-    to have a balanced ditrubtion of data, due to NOR unfiltered having 70000
-    images vs others with less than 1000.
-'''
+    if os.path.exists("data"):
+        print("Data folder already exists. Skipping folder creation.")
+        return
 
     # create output folders if they dont exist
     os.makedirs(TRAINING_DIR, exist_ok=True)
@@ -88,4 +93,4 @@ def dataset_prep():
                 except FileExistsError:
                     pass
 
-    print("created_images dataset successfully downsized, shuffled & split into training, validation, and test sets using file links")
+    print("Created_images dataset successfully downsized, shuffled & split into training, validation, and test sets using file links.")
