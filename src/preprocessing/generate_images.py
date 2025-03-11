@@ -2,6 +2,12 @@
 Takes in ECG data from the locally stored MIT-BIH database
 and transforms it into 128 x 128 images of the heartbeats
 on record, all centered around the R-peak.
+
+WARNING: this file takes some time to run due to the 
+size of the ecg records. I have implemented multiprocessing
+to use all CPU cores to speed it up, but be warned 
+CTRL + C will not end the process once it has started
+due to the nature of multiprocess.
 """
 
 import os
@@ -16,6 +22,7 @@ from scripts.ecg_baseline_wander import remove_baseline_wander
 from scripts.augment_images import beat_augment
 
 RECORDS_DB = "data/mit_bih_records" # RECORD_DB = MIT-BIH database
+IMAGES_PATH = "data/created_images"
 PRE_R_WINDOW = 128  # Number of samples before the R-peak
 POST_R_WINDOW = 128  # Number of samples after the R-peak
 SAMPLING_RATE = 360 # Sa,pling rate of the data
@@ -123,7 +130,7 @@ def process_patient_record(patient_num):
         dt_name = annotation_map.get(closest_annotation, 'OTHER')
 
         # create the directory if it doesnt exist for future users
-        os.makedirs(f'{RECORDS_DB}/{dt_name}', exist_ok=True)
+        os.makedirs(f'{IMAGES_PATH}/{dt_name}', exist_ok=True)
 
         # Create the plot
         # 3.31, 3.04 for 256 x 256 sized image
@@ -134,7 +141,7 @@ def process_patient_record(patient_num):
 
         # Save the figure in the created images folder for viewing
         fig.savefig(
-            f'{RECORDS_DB}/{dt_name}/{patient_num}_{idx}.png',
+            f'{IMAGES_PATH}/{dt_name}/{patient_num}_{idx}.png',
             dpi=100,
             bbox_inches=None,
             pad_inches=0
