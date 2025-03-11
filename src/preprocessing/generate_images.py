@@ -15,10 +15,10 @@ import multiprocessing
 import wfdb
 import numpy
 import matplotlib.pyplot as plt
-from biosppy.signals import ecg
 
 from scripts.ecg_denoise import denoise_signal
 from scripts.ecg_baseline_wander import remove_baseline_wander
+from scripts.detect_rpeaks import detect_rpeaks
 from scripts.augment_images import beat_augment
 
 RECORDS_DB = "data/mit_bih_records" # RECORD_DB = MIT-BIH database
@@ -30,6 +30,17 @@ SAMPLING_RATE = 360 # Sa,pling rate of the data
 # split all files ending in .dat, returns list of filenames (001, 002 etc)
 records = [f.split('.')[0] for f in os.listdir(RECORDS_DB) if f.endswith('.dat')]
 
+# Map the annotation symbol to a label
+ann_translate = {
+    'N': 'NOR', 
+    'V': 'PVC', 
+    '/': 'PAB', 
+    'R': 'RBB', 
+    'L': 'LBB',
+    'A': 'APC', 
+    '!': 'VFW', 
+    'E': 'VEB'
+}
 
 def process_patient_record(patient_num):
 
@@ -50,13 +61,8 @@ def process_patient_record(patient_num):
 
     ecg_data = denoise_signal(ecg_data) # Denoise the data
     ecg_data = remove_baseline_wander(ecg_data) # Remove baseline wander
+    rpeaks_indices = detect_rpeaks(ecg_data, SAMPLING_RATE) # identify r peaks
 
-    # identify ecg features, including r peak
-    rpeaks_indices = ecg.ecg(
-        signal=ecg_data,
-        sampling_rate=SAMPLING_RATE,
-        show=False
-        )
 
 
     # This part of the code identifies noisy periods to be skipped later.
@@ -108,29 +114,15 @@ def process_patient_record(patient_num):
         # Find the annotation closest to the R-peak
         closest_annotation_idx = numpy.argmin(numpy.abs(annotation.sample - rpeak_idx))
         closest_annotation = annotation.symbol[closest_annotation_idx]
+        full_ann = ann_translate.get(closest_annotation, 'OTHER') # use ann map to translate
 
         # Define the range for the current beat (centered around the R-peak)
         start_idx = max(rpeak_idx - PRE_R_WINDOW, 0)
         end_idx = min(rpeak_idx + POST_R_WINDOW, len(ecg_data))
-
-        # Extract the heartbeat segment
-        beat = ecg_data[start_idx:end_idx]
-
-        # Map the annotation symbol to a label
-        annotation_map = {
-            'N': 'NOR', 
-            'V': 'PVC', 
-            '/': 'PAB', 
-            'R': 'RBB', 
-            'L': 'LBB',
-            'A': 'APC', 
-            '!': 'VFW', 
-            'E': 'VEB'
-        }
-        dt_name = annotation_map.get(closest_annotation, 'OTHER')
+        beat = ecg_data[start_idx:end_idx] # Extract the heartbeat segment
 
         # create the directory if it doesnt exist for future users
-        os.makedirs(f'{IMAGES_PATH}/{dt_name}', exist_ok=True)
+        os.makedirs(f'{IMAGES_PATH}/{full_ann}', exist_ok=True)
 
         # Create the plot
         # 3.31, 3.04 for 256 x 256 sized image
@@ -141,7 +133,7 @@ def process_patient_record(patient_num):
 
         # Save the figure in the created images folder for viewing
         fig.savefig(
-            f'{IMAGES_PATH}/{dt_name}/{patient_num}_{idx}.png',
+            f'{IMAGES_PATH}/{full_ann}/{patient_num}_{idx}.png',
             dpi=100,
             bbox_inches=None,
             pad_inches=0
@@ -151,8 +143,6 @@ def process_patient_record(patient_num):
         # creates extra augmented images of any arrythmias
         beat_augment(beat, closest_annotation, idx, patient_num)
 
-        # Close the plot to free up resources
-        plt.close(fig)
 
 if __name__ == '__main__':
     with multiprocessing.Pool(processes=os.cpu_count()) as pool:
