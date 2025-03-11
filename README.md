@@ -7,8 +7,8 @@ This project implements an ECG classification system using a Convolutional Neura
 
 1. Clone the repository:
     ```bash
-    git clone <repository-url>
-    cd <project-directory>
+    git clone https://github.com/EthanLynam/arrythmia_detector_cnn.git
+    cd /your/repo/directory
     ```
 
 2. Install dependencies:
@@ -53,7 +53,7 @@ This project implements an ECG classification system using a Convolutional Neura
 
 ## Usage
 
-- **Preprocess**: Takes raw ECG data from MIT-BIH, transforms it into 128x128 grayscale images of each heartbeat. Four augmented images created for each arrythmia due to lack of arrythmia data.
-- **CNN Model**: Classifies ECG signals to identify abnormalities.
-- **Arduino Client**: Sends ECG data to the WebSocket server.
-- **WebSocket Server**: Receives real-time ECG data, performs denoising and baseline wander reduction, creates temporary images for CNN classification and user notification.
+- **preprocessing**: Takes raw ECG data from MIT-BIH, transforms it into 128x128 grayscale images of each heartbeat. Four augmented images created for each arrythmia due to lack of arrythmia data.
+- **CNN**: Classifies ECG signals to identify abnormalities.
+- **arduino_client**: Sends ECG data to the WebSocket server.
+- **websocket_server**: Receives real-time ECG data, performs denoising and baseline wander reduction, creates temporary images for CNN classification and user notification.
