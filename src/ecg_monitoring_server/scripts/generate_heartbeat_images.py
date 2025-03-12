@@ -7,10 +7,13 @@ DIR = 'data/created_images'
 
 def create_images(ecg_data, rpeaks_indices):
 
-    for idx, rpeak_idx in rpeaks_indices:
+    counter = 0
+
+    for idx in rpeaks_indices:
+        counter += 1
         # Define the range for the current beat (centered around the R-peak)
-        start_idx = max(rpeak_idx - PRE_R_WINDOW, 0)
-        end_idx = min(rpeak_idx + POST_R_WINDOW, len(ecg_data))
+        start_idx = max(idx - PRE_R_WINDOW, 0)
+        end_idx = min(idx + POST_R_WINDOW, len(ecg_data))
 
         # Extract the heartbeat segment
         beat = ecg_data[start_idx:end_idx]
@@ -22,16 +25,16 @@ def create_images(ecg_data, rpeaks_indices):
         ax.set_xlim(0, len(beat))
         ax.axis('off')
 
-        # if annotation present, creates annotation specific folder 
+        # if annotation present, creates annotation specific folder
         # for it if not already existing and adds image to that folder,
         # otherwise just creates and adds to created_images folder
 
         os.makedirs(DIR, exist_ok=True)
 
         fig.savefig(
-            f'{DIR}/{idx}.png',
+            f'{DIR}/{counter}_{idx}.png',
             dpi=100,
-            bbox_inches=None,
+            bbox_inches='tight',
             pad_inches=0
         )
 

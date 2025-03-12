@@ -17,10 +17,12 @@ WebSocketsClient webSocket;
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
 
   switch (type) {
-    case WStype_CONNECTED:
-      Serial.println("Connected to server!");
     case WStype_DISCONNECTED:
       Serial.println("Disconnected.");
+      break;
+    case WStype_CONNECTED:
+      Serial.println("Connected to server!");
+      Serial.println("Sending ECG data to server...");
       break;
     case WStype_ERROR:
       Serial.println("Error occurred.");
@@ -67,5 +69,5 @@ void loop() {
     sprintf(dataToSend, "%d", ecgData);
     webSocket.sendTXT(dataToSend);
 
-    delay(50);
+    delay(3); //300hZ to mimick mit-bih 360Hz
 }

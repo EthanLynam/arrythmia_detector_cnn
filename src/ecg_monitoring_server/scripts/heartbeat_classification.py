@@ -4,7 +4,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 
-model = load_model('../../cnn/models/arrythmia_detection_cnn.keras')
+model = load_model('../cnn/models/arrythmia_detection_cnn.keras')
 
 class_labels = [
     "ATRIAL PREMATURE BEAT",
@@ -19,13 +19,13 @@ class_labels = [
 
 def classify_heartbeat(image_path):
 
-    image = image.load_img(
+    img = image.load_img(
         image_path,
         target_size=(128, 128),
         color_mode='grayscale'
     )
 
-    image_array = image.img_to_array(image)
+    image_array = image.img_to_array(img)
     image_array = np.expand_dims(image_array, axis=0)
 
     # Predict the class
@@ -45,3 +45,5 @@ def classify_heartbeat(image_path):
             "*                                                 *\n"
             "***************************************************\n"
         )
+    else:
+        print("HEARTBEAT NORMAL - ALL CLEAR!")

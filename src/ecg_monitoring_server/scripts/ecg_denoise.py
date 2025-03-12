@@ -15,10 +15,10 @@ def denoise_signal(ecg_data):
     """denoises the given signal"""
 
     # decompose signal into wavelt coefficients
-    coefficients = pywt.wavedec(ecg_data, 'db5', level=10)
+    coefficients = pywt.wavedec(ecg_data, 'db5', level=9)
 
-    low_cutoff = 4
-    high_cutoff = 6
+    low_cutoff = 2
+    high_cutoff = 7
 
     # zero out coeffocoents from 0 to low cutoff
     for num in range(0, low_cutoff):
