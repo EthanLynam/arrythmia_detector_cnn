@@ -55,7 +55,7 @@ def process_patient_record(patient_num):
     # This will be MLII for all records but 102, 104,
     # who's data is clearer on second lead (both on pacemakers)
     if patient_num == 114 or 207:
-        ecg_data = ecg_data[1]  
+        ecg_data = ecg_data[1]
     else:
         ecg_data = ecg_data[0]
 
