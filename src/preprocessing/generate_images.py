@@ -7,7 +7,7 @@ WARNING: this file takes some time to run due to the
 size of the ecg records. I have implemented multiprocessing
 to use all CPU cores to speed it up, but be warned 
 CTRL + C will not end the process once it has started
-due to the nature of multiprocess.
+due to multiple processes being spawned.
 """
 
 import os
@@ -16,10 +16,10 @@ import wfdb
 import numpy
 import matplotlib.pyplot as plt
 
-from scripts.ecg_denoise import denoise_signal
-from scripts.ecg_baseline_wander import remove_baseline_wander
-from scripts.detect_rpeaks import detect_rpeaks
-from scripts.augment_images import beat_augment
+from utils.ecg_denoise import denoise_signal
+from utils.ecg_baseline_wander import remove_baseline_wander
+from utils.detect_rpeaks import detect_rpeaks
+from utils.augment_images import beat_augment
 
 RECORDS_DB = "data/mit_bih_records" # RECORD_DB = MIT-BIH database
 IMAGES_PATH = "data/created_images"
@@ -53,7 +53,7 @@ def process_patient_record(patient_num):
 
     # Two lead types to choose from.
     # This will be MLII for all records but 102, 104,
-    # who's data is clearer on second lead (both on pacemakers)
+    # who's data is clearer on second lead (both patients on pacemakers)
     if patient_num == 114 or 207:
         ecg_data = ecg_data[1]
     else:

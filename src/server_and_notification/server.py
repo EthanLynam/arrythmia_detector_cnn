@@ -6,11 +6,11 @@ import asyncio
 import websockets
 import numpy as np
 
-from scripts.ecg_denoise import denoise_signal
-from scripts.ecg_baseline_wander import remove_baseline_wander
-from scripts.detect_rpeaks import detect_rpeaks
-from scripts.generate_heartbeat_images import create_images
-from scripts.heartbeat_classification import classify_heartbeat
+from utils.ecg_denoise import denoise_signal
+from utils.ecg_baseline_wander import remove_baseline_wander
+from utils.detect_rpeaks import detect_rpeaks
+from utils.generate_heartbeat_images import create_images
+from utils.heartbeat_classification import classify_heartbeat
 
 # Shared queue to store incoming data
 ecg_queue = deque(maxlen=1625)  # scipy signal processing requires minimum 1624 data points.
@@ -36,7 +36,7 @@ def process_data():
 
         image_path = os.path.join('data/created_images', filename)
         classify_heartbeat(image_path)
-        os.remove(image_path)
+        # os.remove(image_path)
 
     # reset counter and clear queue
     counter = 0

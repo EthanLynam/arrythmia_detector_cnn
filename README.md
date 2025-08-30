@@ -20,25 +20,31 @@ This project implements an ECG classification system using a Convolutional Neura
     - A **WiFi-capable microcontroller** to collect and send ECG data to the WebSocket server.
     - An **ECG monitor** or sensor to capture ECG data.
     - I used the Arduino nano 33 IoT & AD8232 ECG Sensor.
+
+    ![Alt text](screenshots/circuit%20diagram.png)
+    ![Alt text](screenshots/leadPlacement.jpg)
+    ![Alt text](screenshots/image0%20(1).jpeg)
     
     Ensure the microcontroller is properly set up to collect ECG data from the ECG monitor, to communicate with the server and to send ECG data over the network.
 
 ## Running the Project
 
-1. Preprocess the data (Raw ECG data -> grayscale images of heartbeats):
+1. preprocess the data
+    - Takes raw ECG data from MIT-BIH, transforms it into 128x128 grayscale images of each heartbeat. Four augmented images also created for each arrhythmia due to lack of arrhythmia data. 225,000 images are created overall.
     ```bash
     cd src/preprocessing
     python generate_images.py
     ```
+    ![Alt text](screenshots/2_329.png)
+    ![Alt text](screenshots/3_531.png)
 
-2. Navigate to the CNN Jupyter notebook.
+2. train and evaluate the cnn model within the jupyter notebook
     ```bash
-    cd src/cnn
+    cd src/cnn/train_and_evaluate_cnn.ipynb
     ```
+    ![Alt text](screenshots/cnn_epochs.png)
 
-3. Run the code cells within the Jupyter Notebook (Dataset Acquisition, CNN Training, CNN Evaluation).
-
-4. Copy/paste ecg_websocket_client.ino into microcontroller IDE for client/server communication between microcontroller & local machine.
+4. use ecg_websocket_client.ino within microcontroller IDE for client/server communication between microcontroller & local machine.
     ```bash
     cd src/arduino_client
     ```
@@ -49,11 +55,10 @@ This project implements an ECG classification system using a Convolutional Neura
     python server.py
     ```
 
-6. View results in terminal (data is processed in batches, be patient!).
+6. View results in terminal (data is processed in batches, it may take up to 20 seconds).
 
-## Usage
+## View the report
 
-- **preprocessing**: Takes raw ECG data from MIT-BIH, transforms it into 128x128 grayscale images of each heartbeat. Four augmented images created for each arrythmia due to lack of arrythmia data.
-- **CNN**: Classifies ECG signals to identify abnormalities.
-- **arduino_client**: Sends ECG data to the WebSocket server.
-- **websocket_server**: Receives real-time ECG data, performs denoising and baseline wander reduction, creates temporary images for CNN classification and user notification.
+[Report](report.pdf)
+
+
