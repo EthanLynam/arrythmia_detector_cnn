@@ -36,7 +36,10 @@ This project implements an ECG classification system using a Convolutional Neura
     python generate_images.py
     ```
     ![Alt text](screenshots/2_329.png)
-    ![Alt text](screenshots/3_531.png)
+    ![Alt text](screenshots/104_1808.png)
+    ![Alt text](screenshots/109_2_Op.png)
+    ![Alt text](screenshots/105_255_On.png)
+    ![Alt text](screenshots/207_1861_On.png)
 
 2. train and evaluate the cnn model within the jupyter notebook
     ```bash
